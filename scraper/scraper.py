@@ -14,3 +14,18 @@ def scrape_content(url):
     content = soup.find_all('div', class_='item-outer-container')
     content_list = [str(item) for item in content]
     return content_list
+
+def handler(event, context):
+    scrape_url = load_environment_variables()
+    if not scrape_url:
+        return {
+            'statusCode': 500,
+            'body': 'SCRAPE_URL environment variable not set'
+        }
+
+    content = scrape_content(scrape_url)
+    
+    return {
+        'statusCode': 200,
+        'body': content
+    }
