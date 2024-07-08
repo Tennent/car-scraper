@@ -38,6 +38,24 @@ def get_car_model_price(car_details):
     
     return car_model_price
 
+def combine_car_details(car_details):
+    result = []
+
+    if car_details:
+        for detail in car_details:
+            car_model_name = detail.find('h2')
+            car_model_price = detail.find('strong')
+                    
+            if car_model_name and car_model_price:
+                car_data = {
+                    'model': car_model_name.get_text(strip=True),
+                    'price': car_model_price.get_text(strip=True)
+                    }
+                if car_data not in result:
+                    result.append(car_data)
+
+    return result
+
 def handler(event, context):
     scrape_url = load_environment_variables()
     if not scrape_url:
@@ -46,7 +64,11 @@ def handler(event, context):
             'body': 'SCRAPE_URL environment variable not set'
         }
 
-    content = combine_car_details(scrape_url)
+    parsed_url = url_parser(scrape_url)
+    car_models = get_car_models(parsed_url)
+    car_details = get_car_model_details(car_models)
+    
+    content = combine_car_details(car_details)
     
     return {
         'statusCode': 200,
