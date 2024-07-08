@@ -13,10 +13,13 @@ def url_parser(url):
     soup = BeautifulSoup(res.content, 'html.parser')
     return soup
 
-def scrape_content(url):
+def get_car_models(url):
     parsed_url = url_parser(url)
     content = parsed_url.find_all('div', id='model-list')
-    
+    return content
+
+def scrape_content(url):
+    content = get_car_models(url)
     result = []
 
     if content:
