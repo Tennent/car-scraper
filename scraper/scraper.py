@@ -8,11 +8,15 @@ def load_environment_variables():
     load_dotenv()
     return os.getenv('SCRAPE_URL')
 
-def scrape_content(url):
+def url_parser(url):
     res = requests.get(url) 
     soup = BeautifulSoup(res.content, 'html.parser')
-    content = soup.find_all('div', id='model-list')
+    return soup
 
+def scrape_content(url):
+    parsed_url = url_parser(url)
+    content = parsed_url.find_all('div', id='model-list')
+    
     result = []
 
     if content:
