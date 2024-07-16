@@ -5,6 +5,7 @@ from scraper import (
     get_car_model_details,
     get_car_model_name,
     get_car_model_price,
+    combine_car_details
 )
 
 def test_get_car_models():
@@ -35,3 +36,26 @@ def test_get_car_model_price():
     car_details = soup.find_all('div', class_='content')
     result = get_car_model_price(car_details)
     assert result.text == '5000000 HUF'
+
+def test_combine_car_details():
+    html = '''
+    <div class="content">
+        <h2>Model A</h2>
+        <div>
+            <strong>5000000 HUF</strong>
+        </div>
+    </div>
+    <div class="content">
+        <h2>Model B</h2>
+        <div>
+            <strong>6000000 HUF</strong>
+        </div>
+    </div>
+    '''
+    soup = BeautifulSoup(html, 'html.parser')
+    car_details = soup.find_all('div', class_='content')
+    result = combine_car_details(car_details)
+    assert result == [
+        {'model': 'Model A', 'price': '5000000 HUF'},
+        {'model': 'Model B', 'price': '6000000 HUF'}
+    ]
