@@ -4,6 +4,7 @@ from scraper import (
     get_car_models,
     get_car_model_details,
     get_car_model_name,
+    get_car_model_price,
 )
 
 def test_get_car_models():
@@ -27,3 +28,10 @@ def test_get_car_model_name():
     car_details = soup.find_all('div', class_='content')
     result = get_car_model_name(car_details)
     assert result.text == 'Model Name'
+
+def test_get_car_model_price():
+    html = '<div class="content"><div><strong>5000000 HUF</strong></div></div>'
+    soup = BeautifulSoup(html, 'html.parser')
+    car_details = soup.find_all('div', class_='content')
+    result = get_car_model_price(car_details)
+    assert result.text == '5000000 HUF'
