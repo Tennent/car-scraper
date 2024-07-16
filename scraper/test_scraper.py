@@ -1,12 +1,17 @@
 import pytest
 from bs4 import BeautifulSoup
 from scraper import (
+    load_environment_variables,
     get_car_models,
     get_car_model_details,
     get_car_model_name,
     get_car_model_price,
     combine_car_details
 )
+
+def test_load_environment_variables(monkeypatch):
+    monkeypatch.setenv('SCRAPE_URL', 'http://example.com')
+    assert load_environment_variables() == 'http://example.com'
 
 def test_get_car_models():
     html = '<html><body><div id="model-list"><div class="content"></div></div></body></html>'
