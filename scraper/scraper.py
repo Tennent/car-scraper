@@ -50,8 +50,8 @@ def combine_car_details(car_details):
                     
             if car_model_name and car_model_price:
                 car_data = {
-                    'model': car_model_name,
-                    'price': car_model_price
+                    'model': car_model_name.strip(),
+                    'price': f"{car_model_price} HUF"
                     }
                 if car_data not in result:
                     result.append(car_data)
