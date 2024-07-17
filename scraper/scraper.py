@@ -24,32 +24,34 @@ def get_car_model_details(car_models):
     
     return car_details
 
-def get_car_model_name(car_details):
-    if car_details:
-        for detail in car_details:
-            car_model_name = detail.find('h2')
-    
-    return car_model_name
+def get_car_model_name(car_detail):
+    if car_detail:
+        car_model_name = car_detail.find('h2')
+        if car_model_name:
+            return car_model_name.text
 
-def get_car_model_price(car_details):
-    if car_details:
-        for detail in car_details:
-            car_model_price = detail.find('strong')
-    
-    return car_model_price
+    return None
+
+def get_car_model_price(car_detail):
+    if car_detail:
+        car_model_price = car_detail.find('strong')
+        if car_model_price:
+            return car_model_price.text
+
+    return None
 
 def combine_car_details(car_details):
     result = []
 
     if car_details:
         for detail in car_details:
-            car_model_name = detail.find('h2')
-            car_model_price = detail.find('strong')
+            car_model_name = get_car_model_name(detail)
+            car_model_price = get_car_model_price(detail)
                     
             if car_model_name and car_model_price:
                 car_data = {
-                    'model': car_model_name.get_text(strip=True),
-                    'price': car_model_price.get_text(strip=True)
+                    'model': car_model_name,
+                    'price': car_model_price
                     }
                 if car_data not in result:
                     result.append(car_data)
@@ -67,7 +69,6 @@ def handler(event, context):
     parsed_url = url_parser(scrape_url)
     car_models = get_car_models(parsed_url)
     car_details = get_car_model_details(car_models)
-    
     content = combine_car_details(car_details)
     
     return {
