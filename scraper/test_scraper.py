@@ -31,29 +31,29 @@ def test_get_car_model_details():
 def test_get_car_model_name():
     html = '<div class="content"><h2>Model Name</h2></div>'
     soup = BeautifulSoup(html, 'html.parser')
-    car_details = soup.find_all('div', class_='content')
-    result = get_car_model_name(car_details)
-    assert result.text == 'Model Name'
+    car_detail = soup.find('div', class_='content')
+    result = get_car_model_name(car_detail)
+    assert result == 'Model Name'
 
 def test_get_car_model_price():
     html = '<div class="content"><div><strong>5000000 HUF</strong></div></div>'
     soup = BeautifulSoup(html, 'html.parser')
-    car_details = soup.find_all('div', class_='content')
-    result = get_car_model_price(car_details)
-    assert result.text == '5000000 HUF'
+    car_detail = soup.find('div', class_='content')
+    result = get_car_model_price(car_detail)
+    assert result == '5000000 HUF'
 
 def test_combine_car_details():
     html = '''
     <div class="content">
         <h2>Model A</h2>
         <div>
-            <strong>5000000 HUF</strong>
+            <strong>5000000</strong>
         </div>
     </div>
     <div class="content">
         <h2>Model B</h2>
         <div>
-            <strong>6000000 HUF</strong>
+            <strong>6000000</strong>
         </div>
     </div>
     '''
