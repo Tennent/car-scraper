@@ -36,8 +36,8 @@ deploy() {
     image_name=car_scraper_lambda
     image_tag=latest
 
-    # Create S3 bucket for Terraform state
     create_s3_bucket "$aws_region" "aws_bucket_name"
+    create_repo_infrastructure "$aws_region" "$aws_bucket_name"
 }
 
 deploy "$1" "$2"
