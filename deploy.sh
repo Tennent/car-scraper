@@ -28,6 +28,17 @@ create_repo_infrastructure() {
     fi
 }
 
+# Build and tag Docker image
+image_builder() {
+    local aws_region="$1"
+    local aws_account_id="$2"
+    local image_name="$3"
+    local image_tag="$4"
+
+    docker build -t ${image_name}:${image_tag} ./scraper
+    docker tag ${image_name}:${image_tag} ${aws_account_id}.dkr.ecr.${aws_region}.amazonaws.com/${image_name}:${image_tag}
+}
+
 deploy() {
     aws_region="$1"
     aws_account_id="$2"
