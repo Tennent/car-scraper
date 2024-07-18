@@ -81,6 +81,7 @@ deploy() {
     create_repo_infrastructure "$aws_region" "$aws_bucket_name"
     image_builder "$aws_region" "$aws_account_id" "$image_name" "$image_tag"
     image_uploader "$aws_region" "$aws_account_id" "$image_name" "$image_tag"
+    create_lambda_infrastructure "$aws_region" "$aws_bucket_name"
 }
 
 deploy "$1" "$2"
