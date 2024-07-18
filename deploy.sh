@@ -16,6 +16,17 @@ create_s3_bucket() {
     fi
 }
 
+# Init and apply Terraform for repo infrastructure
+create_repo_infrastructure() {
+    local aws_region="$1"
+    
+    ( cd ./infras/repo_infra && terraform init -backend-config="bucket=car-scraper-repo-bucket" -backend-config="region=$aws_region" && terraform apply -auto-approve )
+    if [ $? -ne 0 ]; then
+        echo "Terraform apply for repo_infra failed. Exiting."
+        exit 1
+    fi
+}
+
 deploy() {
     aws_region="$1"
     aws_account_id="$2"
