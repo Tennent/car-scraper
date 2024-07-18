@@ -15,3 +15,15 @@ create_s3_bucket() {
         echo "S3 bucket created successfully."
     fi
 }
+
+deploy() {
+    aws_region="$1"
+    aws_account_id="$2"
+    image_name=car_scraper_lambda
+    image_tag=latest
+
+    # Create S3 bucket for Terraform state
+    create_s3_bucket "$aws_region"
+}
+
+deploy "$1" "$2"
