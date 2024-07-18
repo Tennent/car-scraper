@@ -49,6 +49,7 @@ deploy() {
 
     create_s3_bucket "$aws_region" "aws_bucket_name"
     create_repo_infrastructure "$aws_region" "$aws_bucket_name"
+    image_builder "$aws_region" "$aws_account_id" "$image_name" "$image_tag"
 }
 
 deploy "$1" "$2"
