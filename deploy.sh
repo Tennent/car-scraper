@@ -39,6 +39,24 @@ image_builder() {
     docker tag ${image_name}:${image_tag} ${aws_account_id}.dkr.ecr.${aws_region}.amazonaws.com/${image_name}:${image_tag}
 }
 
+# Login and push Docker image to ECR
+image_uploader() {
+    local aws_region="$1"
+    local aws_account_id="$2"
+    local image_name="$3"
+    local image_tag="$4"
+
+    # Login to ECR
+    aws ecr get-login-password --region ${aws_region} | docker login --username AWS --password-stdin ${aws_account_id}.dkr.ecr.${aws_region}.amazonaws.com
+
+    # Push image to ECR
+    docker push ${aws_account_id}.dkr.ecr.${aws_region}.amazonaws.com/${image_name}:${image_tag}
+    if [ $? -ne 0 ]; then
+        echo "Docker push failed. Exiting."
+        exit 1
+    fi
+}
+
 deploy() {
     aws_region="$1"
     aws_account_id="$2"
