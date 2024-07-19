@@ -6,10 +6,14 @@ terraform {
     }
   }
   backend "s3" {
-    bucket = "car-scraper-repo-bucket"
+    bucket = "car-scraper-bucket"
     key    = "lambda_infra/terraform.tfstate"
     region = "eu-north-1"
   }
+}
+
+provider "aws" {
+  region = "eu-north-1"
 }
 
 resource "aws_iam_role" "lambda_role" {
@@ -32,7 +36,7 @@ resource "aws_iam_role" "lambda_role" {
 data "terraform_remote_state" "repo_infra" {
   backend = "s3"
   config = {
-    bucket = "car-scraper-repo-bucket"
+    bucket = "car-scraper-bucket"
     key    = "repo_infra/terraform.tfstate"
     region = "eu-north-1"
   }
