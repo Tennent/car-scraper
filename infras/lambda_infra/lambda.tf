@@ -16,6 +16,26 @@ provider "aws" {
   region = "eu-north-1"
 }
 
+resource "aws_iam_policy" "dynamodb_lambda_policy" {
+  name = "dynamodb_lambda_policy"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "dynamodb:GetItem",
+          "dynamodb:PutItem"
+        ]
+        Resource = [
+          aws_dynamodb_table.car_table.arn
+        ]
+      }
+    ]
+  })
+}
+
 resource "aws_iam_role" "lambda_role" {
   name = "lambda_role"
 
