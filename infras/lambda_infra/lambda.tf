@@ -50,3 +50,29 @@ resource "aws_lambda_function" "car_scraper_lambda" {
 
   runtime = "python3.8"
 }
+
+resource "aws_dynamodb_table" "car_table" {
+  name           = "car_table"
+  billing_mode   = "PAY_PER_REQUEST"
+  hash_key       = "model_name"
+
+  attribute {
+    name = "model_name"
+    type = "S"
+  }
+
+  attribute {
+    name = "model_price"
+    type = "N"
+  }
+
+  global_secondary_index {
+    name               = "price_index"
+    hash_key           = "model_price"
+    projection_type    = "ALL"
+  }
+
+  tags = {
+    Name = "car_table"
+  }
+}
