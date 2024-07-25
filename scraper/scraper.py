@@ -31,7 +31,10 @@ def get_car_model_details(car_models):
         for model in car_models:
             car_details = model.find_all('div', class_='content')
     
-    return car_details
+            if car_details:
+                return car_details
+            else:
+                return 'Car details not found'
 
 def get_car_model_name(car_detail):
     if car_detail:
