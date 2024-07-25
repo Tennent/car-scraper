@@ -65,8 +65,12 @@ def combine_car_details(car_details):
                     'model_name': car_model_name.strip(),
                     'model_price': int(car_model_price.replace(' ', '').strip())
                     }
-                if car_data not in result:
-                    result.append(car_data)
+            else:
+                car_data = None
+                return 'Car model or price not found'
+
+            if car_data not in result:
+                result.append(car_data)
 
     return result
 
