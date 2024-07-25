@@ -77,6 +77,9 @@ def combine_car_details(car_details):
 def save_to_dynamodb(car_data):
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table('car_table')
+
+    if table is None:
+        return 'Table not found'
     
     with table.batch_writer() as batch:
         for item in car_data:
