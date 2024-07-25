@@ -47,13 +47,13 @@ def test_combine_car_details():
     <div class="content">
         <h2>Model A</h2>
         <div>
-            <strong>5000000</strong>
+            <strong>5 000 000</strong>
         </div>
     </div>
     <div class="content">
         <h2>Model B</h2>
         <div>
-            <strong>6000000</strong>
+            <strong>6 000 000</strong>
         </div>
     </div>
     '''
@@ -61,6 +61,6 @@ def test_combine_car_details():
     car_details = soup.find_all('div', class_='content')
     result = combine_car_details(car_details)
     assert result == [
-        {'model': 'Model A', 'price': '5000000 HUF'},
-        {'model': 'Model B', 'price': '6000000 HUF'}
+        {'model_name': 'Model A', 'model_price': 5000000},
+        {'model_name': 'Model B', 'model_price': 6000000}
     ]
