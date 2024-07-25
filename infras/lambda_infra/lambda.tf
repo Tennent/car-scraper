@@ -74,7 +74,8 @@ resource "aws_lambda_function" "car_scraper_lambda" {
   role          = aws_iam_role.lambda_role.arn
   package_type  = "Image"
 
-  runtime = "python3.8"
+  runtime = "python3.9"
+  timeout = 5
 }
 
 resource "aws_dynamodb_table" "car_table" {
