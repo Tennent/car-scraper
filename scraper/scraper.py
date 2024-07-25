@@ -1,4 +1,5 @@
 import os
+import boto3
 import requests
 from dotenv import load_dotenv
 from pathlib import Path
@@ -57,6 +58,14 @@ def combine_car_details(car_details):
                     result.append(car_data)
 
     return result
+
+def save_to_dynamodb(car_data):
+    dynamodb = boto3.resource('dynamodb')
+    table = dynamodb.Table('car_table')
+    
+    with table.batch_writer() as batch:
+        for item in car_data:
+            batch.put_item(Item=item)
 
 def handler(event, context):
     scrape_url = load_environment_variables()
