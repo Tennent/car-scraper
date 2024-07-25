@@ -52,7 +52,7 @@ def combine_car_details(car_details):
             if car_model_name and car_model_price:
                 car_data = {
                     'model_name': car_model_name.strip(),
-                    'model_price': int(car_model_price.replace(' ', ''))
+                    'model_price': int(car_model_price.replace(' ', '').strip())
                     }
                 if car_data not in result:
                     result.append(car_data)
@@ -80,7 +80,14 @@ def handler(event, context):
     car_details = get_car_model_details(car_models)
     content = combine_car_details(car_details)
     
-    return {
-        'statusCode': 200,
-        'body': content
-    }
+    if content:
+        save_to_dynamodb(content)
+        return {
+            'statusCode': 200,
+            'body': 'Data successfully saved to DynamoDB'
+        }
+    else:
+        return {
+            'statusCode': 500,
+            'body': 'No data to save'
+        }
