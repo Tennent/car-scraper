@@ -3,3 +3,4 @@ python-dotenv
 beautifulsoup4
 awslambdaric
 pytest
+boto3
