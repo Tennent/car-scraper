@@ -20,7 +20,11 @@ def url_parser(url):
 
 def get_car_models(parsed_url):
     content = parsed_url.find_all('div', id='model-list')
-    return content
+    
+    if content:
+        return content
+    else:
+        return 'Models not found'
 
 def get_car_model_details(car_models):
     if car_models:
