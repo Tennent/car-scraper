@@ -12,7 +12,11 @@ def load_environment_variables():
 def url_parser(url):
     res = requests.get(url) 
     soup = BeautifulSoup(res.content, 'html.parser')
-    return soup
+
+    if soup:
+        return soup
+    else:
+        return 'Parsing failed'
 
 def get_car_models(parsed_url):
     content = parsed_url.find_all('div', id='model-list')
