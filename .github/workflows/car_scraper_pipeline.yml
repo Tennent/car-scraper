@@ -1,0 +1,22 @@
+name: car_scraper_pipeline
+on:
+  push:
+    branches: [ main, development ]
+  pull_request:
+    branches: [ main, development ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container: docker.io/tennent/scraper-cicd-container:v1.1.0
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install dependencies
+      run: |
+        pip install -r ./scraper/requirements.txt
+    
+    - name: Run pytest
+      run: |
+        cd scraper
+        pytest
