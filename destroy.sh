@@ -29,8 +29,8 @@ delete_s3_bucket() {
 cleanup() {
     aws_region="$1"
 
-    ( cd ./infras/lambda_infra && terraform destroy -auto-approve )
-    ( cd ./infras/repo_infra && terraform destroy -auto-approve )
+    ( cd ./infras/lambda_infra && terraform init -reconfigure && terraform destroy -auto-approve )
+    ( cd ./infras/repo_infra && terraform init -reconfigure && terraform destroy -auto-approve )
 
     delete_s3_bucket "$aws_region"
 }
