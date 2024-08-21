@@ -68,11 +68,23 @@ data "terraform_remote_state" "repo_infra" {
   }
 }
 
+variable "scrape_url" {
+  description = "Value of the url to scrape"
+  type        = string
+  sensitive = false
+}
+
 resource "aws_lambda_function" "car_scraper_lambda" {
   function_name = "car_scraper"
   image_uri     = "${data.terraform_remote_state.repo_infra.outputs.ecr_repository_url}:latest"
   role          = aws_iam_role.lambda_role.arn
   package_type  = "Image"
+  
+  environment {
+    variables = {
+      SCRAPE_URL = var.scrape_url
+    }  
+  }
 
   runtime = "python3.9"
   timeout = 5
