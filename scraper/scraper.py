@@ -1,8 +1,6 @@
 import os
 import boto3
 import requests
-from dotenv import load_dotenv
-from pathlib import Path
 from bs4 import BeautifulSoup
 
 def load_secrets():
