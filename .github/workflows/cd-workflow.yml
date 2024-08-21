@@ -32,3 +32,34 @@ jobs:
           TF_VAR_scrape_url: ${{ secrets.SCRAPE_URL }}
         run: |
           ./destroy.sh ${{ secrets.AWS_REGION }}
+
+  deploy:
+    needs: cleanup
+    runs-on: ubuntu-latest
+    container: docker.io/tennent/scraper-cicd-container:v1.1.0
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Make scripts executable
+        run: |
+          chmod +x ./deploy.sh
+          chmod +x ./run.sh
+
+      - name: Deploy to AWS
+        env:
+          SCRAPE_URL: ${{ secrets.SCRAPE_URL }}
+        run: |
+          ./deploy.sh ${{ secrets.AWS_REGION }} ${{ secrets.AWS_ACCOUNT_ID }}
+        
+      - name: Run Lambda function
+        run: |
+          ./run.sh
