@@ -52,3 +52,52 @@ jobs:
       - name: Format with black
         run: |
           black scraper
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    container: python:3.9-slim
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify pip cache directory
+        run: |
+          echo "Checking pip cache directory:"
+          mkdir -p ~/.cache/pip
+          ls -la ~/.cache/pip
+
+      - name: Cache Python dependencies
+        id: cache-pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('./scraper/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          if [[ -n ${{ steps.cache-pip.outputs.cache-hit }} ]]; then
+            pip install --upgrade pip
+            pip install -r ./scraper/requirements.txt --no-dep
+          else
+            pip install --upgrade pip
+            pip install -r ./scraper/requirements.txt
+          fi
+
+      - name: Test with pytest
+        run: |
+          pytest --junitxml=test-results.xml --cov=scraper --cov-report=xml
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test-results.xml
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage.xml
