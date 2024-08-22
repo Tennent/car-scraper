@@ -36,6 +36,12 @@ image_builder() {
     local image_tag="$4"
 
     docker build -t ${image_name}:${image_tag} ./scraper
+
+    if [ $? -ne 0 ]; then
+        echo "Docker build failed. Exiting."
+        exit 1
+    fi
+
     docker tag ${image_name}:${image_tag} ${aws_account_id}.dkr.ecr.${aws_region}.amazonaws.com/${image_name}:${image_tag}
 }
 
@@ -48,6 +54,11 @@ image_uploader() {
 
     # Login to ECR
     aws ecr get-login-password --region ${aws_region} | docker login --username AWS --password-stdin ${aws_account_id}.dkr.ecr.${aws_region}.amazonaws.com
+
+    if [ $? -ne 0 ]; then
+        echo "ECR login failed. Exiting."
+        exit 1
+    fi
 
     # Push image to ECR
     docker push ${aws_account_id}.dkr.ecr.${aws_region}.amazonaws.com/${image_name}:${image_tag}
