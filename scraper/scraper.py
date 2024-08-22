@@ -1,13 +1,11 @@
 import os
 import boto3
 import requests
-from dotenv import load_dotenv
-from pathlib import Path
 from bs4 import BeautifulSoup
 
-def load_environment_variables():
-    load_dotenv()
-    return os.getenv('SCRAPE_URL')
+def load_secrets():
+    url_secret = os.getenv('SCRAPE_URL')
+    return url_secret
 
 def url_parser(url):
     res = requests.get(url) 
