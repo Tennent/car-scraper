@@ -1,0 +1,85 @@
+name: car_scraper_pipeline
+on:
+  push:
+    branches: [ main, development ]
+  pull_request:
+    branches: [ main, development ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container: docker.io/tennent/scraper-cicd-container:v1.1.0
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install dependencies
+      run: |
+        pip install -r ./scraper/requirements.txt
+    
+    - name: Run pytest
+      run: |
+        cd scraper
+        pytest
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    container: docker.io/tennent/scraper-cicd-container:v1.1.0
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Build the Docker image
+      run: |
+        cd scraper
+        docker build . -t scraper
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    container: docker.io/tennent/scraper-cicd-container:v1.1.0
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install dependencies
+      run: |
+        pip install -r ./scraper/requirements.txt
+    
+    - name: Configure AWS credentials
+      run: |
+        aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws configure set default.region ${{ secrets.AWS_REGION }}
+    
+    - name: Make scripts executable
+      run: |
+        chmod +x ./deploy.sh
+        chmod +x ./run.sh
+    
+    - name: Deploy to AWS
+      run: |
+        ./deploy.sh ${{ secrets.AWS_REGION }} ${{ secrets.AWS_ACCOUNT_ID }}
+    
+    - name: Run Lambda function
+      run: |
+        ./run.sh ${{ secrets.AWS_REGION }} ${{ secrets.AWS_ACCOUNT_ID }}
+
+  destroy:
+    needs: deploy
+    runs-on: ubuntu-latest
+    container: docker.io/tennent/scraper-cicd-container:v1.1.0
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Configure AWS credentials
+      run: |
+        aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws configure set default.region ${{ secrets.AWS_REGION }}
+    
+    - name: Make script executable
+      run: |
+        chmod +x ./destroy.sh
+      
+    - name: Clean-up
+      run: |
+        ./destroy.sh ${{ secrets.AWS_REGION }} ${{ secrets.AWS_ACCOUNT_ID }}
