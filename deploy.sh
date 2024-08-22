@@ -62,7 +62,7 @@ create_lambda_infrastructure() {
     local aws_region="$1"
     local bucket_name="$2"
     
-    ( cd ./infras/lambda_infra && terraform init -backend-config="$bucket_name" -backend-config="region=$aws_region" && terraform apply -auto-approve )
+    ( cd ./infras/lambda_infra && terraform init -backend-config="bucket=$bucket_name" -backend-config="region=$aws_region" && terraform apply -auto-approve )
     if [ $? -ne 0 ]; then
         echo "Terraform apply for lambda_infra failed. Exiting."
         exit 1
@@ -72,12 +72,12 @@ create_lambda_infrastructure() {
 deploy() {
     aws_region="$1"
     aws_account_id="$2"
-    aws_bucket_name="car-scraper-repo-bucket"
+    aws_bucket_name="car-scraper-bucket"
 
     image_name=car_scraper_lambda
     image_tag=latest
 
-    create_s3_bucket "$aws_region" "aws_bucket_name"
+    create_s3_bucket "$aws_region" "$aws_bucket_name"
     create_repo_infrastructure "$aws_region" "$aws_bucket_name"
     image_builder "$aws_region" "$aws_account_id" "$image_name" "$image_tag"
     image_uploader "$aws_region" "$aws_account_id" "$image_name" "$image_tag"
