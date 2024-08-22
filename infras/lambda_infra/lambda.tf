@@ -16,6 +16,26 @@ provider "aws" {
   region = "eu-north-1"
 }
 
+resource "aws_iam_policy" "dynamodb_lambda_policy" {
+  name = "dynamodb_lambda_policy"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "dynamodb:GetItem",
+          "dynamodb:PutItem"
+        ]
+        Resource = [
+          aws_dynamodb_table.car_table.arn
+        ]
+      }
+    ]
+  })
+}
+
 resource "aws_iam_role" "lambda_role" {
   name = "lambda_role"
 
@@ -31,6 +51,11 @@ resource "aws_iam_role" "lambda_role" {
       },
     ]
   })
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_policy_attachment" {
+  role       = aws_iam_role.lambda_role.name
+  policy_arn = aws_iam_policy.dynamodb_lambda_policy.arn
 }
 
 data "terraform_remote_state" "repo_infra" {
@@ -49,4 +74,30 @@ resource "aws_lambda_function" "car_scraper_lambda" {
   package_type  = "Image"
 
   runtime = "python3.8"
+}
+
+resource "aws_dynamodb_table" "car_table" {
+  name           = "car_table"
+  billing_mode   = "PAY_PER_REQUEST"
+  hash_key       = "model_name"
+
+  attribute {
+    name = "model_name"
+    type = "S"
+  }
+
+  attribute {
+    name = "model_price"
+    type = "N"
+  }
+
+  global_secondary_index {
+    name               = "price_index"
+    hash_key           = "model_price"
+    projection_type    = "ALL"
+  }
+
+  tags = {
+    Name = "car_table"
+  }
 }
