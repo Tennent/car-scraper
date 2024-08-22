@@ -8,9 +8,11 @@ from scraper import (
     combine_car_details
 )
 
-def test_load_load_secrets(monkeypatch):
+
+def test_load_secrets(monkeypatch):
     monkeypatch.setenv('SCRAPE_URL', 'http://example.com')
     assert load_secrets() == 'http://example.com'
+
 
 def test_get_car_models():
     html = '<html><body><div id="model-list"><div class="content"></div></div></body></html>'
@@ -18,6 +20,7 @@ def test_get_car_models():
     result = get_car_models(soup)
     assert len(result) == 1
     assert result[0].find('div', class_='content') is not None
+
 
 def test_get_car_model_details():
     html = '<div id="model-list"><div class="content"></div></div>'
@@ -27,6 +30,7 @@ def test_get_car_model_details():
     assert len(result) == 1
     assert result[0].get('class') == ['content']
 
+
 def test_get_car_model_name():
     html = '<div class="content"><h2>Model Name</h2></div>'
     soup = BeautifulSoup(html, 'html.parser')
@@ -34,12 +38,14 @@ def test_get_car_model_name():
     result = get_car_model_name(car_detail)
     assert result == 'Model Name'
 
+
 def test_get_car_model_price():
     html = '<div class="content"><div><strong>5000000 HUF</strong></div></div>'
     soup = BeautifulSoup(html, 'html.parser')
     car_detail = soup.find('div', class_='content')
     result = get_car_model_price(car_detail)
     assert result == '5000000 HUF'
+
 
 def test_combine_car_details():
     html = '''

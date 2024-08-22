@@ -66,44 +66,38 @@ check_aws_resources() {
 }
 
 delete_s3_bucket() {
-    local region="$1"
-    local bucket_name="car-scraper-bucket"
+  local region="$1"
+  local bucket_name="car-scraper-bucket"
 
-    echo "Deleting S3 bucket: $bucket_name"
+  echo "Deleting S3 bucket: $bucket_name"
 
-    # Delete objects
-    aws s3api delete-objects --bucket $bucket_name \
-        --delete "$(aws s3api list-object-versions \
-        --bucket $bucket_name \
-        --query='{Objects: Versions[].{Key:Key,VersionId:VersionId}}')"
+  # Delete objects
+  aws s3api delete-objects --bucket $bucket_name \
+    --delete "$(aws s3api list-object-versions \
+    --bucket $bucket_name \
+    --query='{Objects: Versions[].{Key:Key,VersionId:VersionId}}')"
 
-    # Delete markers
-    aws s3api delete-objects --bucket $bucket_name \
-        --delete "$(aws s3api list-object-versions \
-        --bucket $bucket_name \
-        --query='{Objects: DeleteMarkers[].{Key:Key,VersionId:VersionId}}')"
+  # Delete markers
+  aws s3api delete-objects --bucket $bucket_name \
+    --delete "$(aws s3api list-object-versions \
+    --bucket $bucket_name \
+    --query='{Objects: DeleteMarkers[].{Key:Key,VersionId:VersionId}}')"
 
-    # Delete bucket
-    if aws s3 rb "s3://$bucket_name" --force; then
-        echo "S3 bucket $bucket_name deleted successfully"
-    else
-        echo "Failed to delete S3 bucket $bucket_name. It might not exist or you do not have the necessary permissions."
-    fi
+  # Delete bucket
+  if aws s3 rb "s3://$bucket_name" --force; then
+    echo "S3 bucket $bucket_name deleted successfully"
+  else
+    echo "Failed to delete S3 bucket $bucket_name. It might not exist or you do not have the necessary permissions."
+  fi
 }
 
 cleanup() {
-    aws_region="$1"
-
-  check_aws_resources
-    if [ $? -eq 1 ]; then
-      echo "No AWS resources found. Exiting..."
-      exit 0
-    fi
+  aws_region="$1"
 
   ( cd ./infras/lambda_infra && terraform init -reconfigure && terraform destroy -auto-approve )
   ( cd ./infras/repo_infra && terraform init -reconfigure && terraform destroy -auto-approve )
 
-    delete_s3_bucket "$aws_region"
+  delete_s3_bucket "$aws_region"
 }
 
 cleanup $1
