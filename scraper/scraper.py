@@ -8,29 +8,51 @@ def load_environment_variables():
     load_dotenv()
     return os.getenv('SCRAPE_URL')
 
-def scrape_content(url):
+def url_parser(url):
     res = requests.get(url) 
     soup = BeautifulSoup(res.content, 'html.parser')
-    content = soup.find_all('div', id='model-list')
+    return soup
 
+def get_car_models(parsed_url):
+    content = parsed_url.find_all('div', id='model-list')
+    return content
+
+def get_car_model_details(car_models):
+    if car_models:
+        for model in car_models:
+            car_details = model.find_all('div', class_='content')
+    
+    return car_details
+
+def get_car_model_name(car_details):
+    if car_details:
+        for detail in car_details:
+            car_model_name = detail.find('h2')
+    
+    return car_model_name
+
+def get_car_model_price(car_details):
+    if car_details:
+        for detail in car_details:
+            car_model_price = detail.find('strong')
+    
+    return car_model_price
+
+def combine_car_details(car_details):
     result = []
 
-    if content:
-        for item in content:
-            car_info_list = item.find_all('div', class_='content')
-
-            if car_info_list:
-                for car_info in car_info_list:
-                    car_model_name = car_info.find('h2')
-                    car_model_price = car_info.find('strong')
+    if car_details:
+        for detail in car_details:
+            car_model_name = detail.find('h2')
+            car_model_price = detail.find('strong')
                     
-                    if car_model_name and car_model_price:
-                        car_data = {
-                            'model': car_model_name.get_text(strip=True),
-                            'price': car_model_price.get_text(strip=True)
-                        }
-                        if car_data not in result:
-                            result.append(car_data)
+            if car_model_name and car_model_price:
+                car_data = {
+                    'model': car_model_name.get_text(strip=True),
+                    'price': car_model_price.get_text(strip=True)
+                    }
+                if car_data not in result:
+                    result.append(car_data)
 
     return result
 
@@ -42,7 +64,11 @@ def handler(event, context):
             'body': 'SCRAPE_URL environment variable not set'
         }
 
-    content = scrape_content(scrape_url)
+    parsed_url = url_parser(scrape_url)
+    car_models = get_car_models(parsed_url)
+    car_details = get_car_model_details(car_models)
+    
+    content = combine_car_details(car_details)
     
     return {
         'statusCode': 200,
