@@ -94,6 +94,12 @@ delete_s3_bucket() {
 cleanup() {
   aws_region="$1"
 
+  check_aws_resources
+    if [ $? -eq 1 ]; then
+      echo "No AWS resources found. Exiting..."
+      exit 0
+    fi
+
   ( cd ./infras/lambda_infra && terraform init -reconfigure && terraform destroy -auto-approve )
   ( cd ./infras/repo_infra && terraform init -reconfigure && terraform destroy -auto-approve )
 
