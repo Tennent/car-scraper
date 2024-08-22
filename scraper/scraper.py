@@ -12,18 +12,29 @@ def load_environment_variables():
 def url_parser(url):
     res = requests.get(url) 
     soup = BeautifulSoup(res.content, 'html.parser')
-    return soup
+
+    if soup:
+        return soup
+    else:
+        return 'Parsing failed'
 
 def get_car_models(parsed_url):
     content = parsed_url.find_all('div', id='model-list')
-    return content
+    
+    if content:
+        return content
+    else:
+        return 'Models not found'
 
 def get_car_model_details(car_models):
     if car_models:
         for model in car_models:
             car_details = model.find_all('div', class_='content')
     
-    return car_details
+            if car_details:
+                return car_details
+            else:
+                return 'Car details not found'
 
 def get_car_model_name(car_detail):
     if car_detail:
@@ -54,14 +65,21 @@ def combine_car_details(car_details):
                     'model_name': car_model_name.strip(),
                     'model_price': int(car_model_price.replace(' ', '').strip())
                     }
-                if car_data not in result:
-                    result.append(car_data)
+            else:
+                car_data = None
+                return 'Car model or price not found'
+
+            if car_data not in result:
+                result.append(car_data)
 
     return result
 
 def save_to_dynamodb(car_data):
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table('car_table')
+
+    if table is None:
+        return 'Table not found'
     
     with table.batch_writer() as batch:
         for item in car_data:
