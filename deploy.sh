@@ -28,6 +28,47 @@ create_repo_infrastructure() {
     fi
 }
 
+# Build and tag Docker image
+image_builder() {
+    local aws_region="$1"
+    local aws_account_id="$2"
+    local image_name="$3"
+    local image_tag="$4"
+
+    docker build -t ${image_name}:${image_tag} ./scraper
+    docker tag ${image_name}:${image_tag} ${aws_account_id}.dkr.ecr.${aws_region}.amazonaws.com/${image_name}:${image_tag}
+}
+
+# Login and push Docker image to ECR
+image_uploader() {
+    local aws_region="$1"
+    local aws_account_id="$2"
+    local image_name="$3"
+    local image_tag="$4"
+
+    # Login to ECR
+    aws ecr get-login-password --region ${aws_region} | docker login --username AWS --password-stdin ${aws_account_id}.dkr.ecr.${aws_region}.amazonaws.com
+
+    # Push image to ECR
+    docker push ${aws_account_id}.dkr.ecr.${aws_region}.amazonaws.com/${image_name}:${image_tag}
+    if [ $? -ne 0 ]; then
+        echo "Docker push failed. Exiting."
+        exit 1
+    fi
+}
+
+# Init and apply Terraform for Lambda infrastructure
+create_lambda_infrastructure() {
+    local aws_region="$1"
+    local bucket_name="$2"
+    
+    ( cd ./infras/lambda_infra && terraform init -backend-config="$bucket_name" -backend-config="region=$aws_region" && terraform apply -auto-approve )
+    if [ $? -ne 0 ]; then
+        echo "Terraform apply for lambda_infra failed. Exiting."
+        exit 1
+    fi
+}
+
 deploy() {
     aws_region="$1"
     aws_account_id="$2"
@@ -38,6 +79,9 @@ deploy() {
 
     create_s3_bucket "$aws_region" "aws_bucket_name"
     create_repo_infrastructure "$aws_region" "$aws_bucket_name"
+    image_builder "$aws_region" "$aws_account_id" "$image_name" "$image_tag"
+    image_uploader "$aws_region" "$aws_account_id" "$image_name" "$image_tag"
+    create_lambda_infrastructure "$aws_region" "$aws_bucket_name"
 }
 
 deploy "$1" "$2"
