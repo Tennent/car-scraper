@@ -85,7 +85,7 @@ deploy() {
     aws_account_id="$2"
     aws_bucket_name="car-scraper-bucket"
 
-    image_name=car_scraper_lambda
+    image_name=car_scraper
     image_tag=latest
 
     create_s3_bucket "$aws_region" "$aws_bucket_name"
