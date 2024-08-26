@@ -6,7 +6,7 @@ terraform {
     }
   }
   backend "s3" {
-    bucket = "car-scraper-bucket"
+    bucket = "car-scraper-repo-bucket"
     key    = "repo_infra/terraform.tfstate"
     region = "eu-north-1"
   }
