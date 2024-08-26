@@ -3,8 +3,3 @@ python-dotenv
 beautifulsoup4
 awslambdaric
 pytest
-pytest-cov
-boto3
-flake8
-mypy
-black
