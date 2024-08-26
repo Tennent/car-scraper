@@ -28,17 +28,17 @@ create_repo_infrastructure() {
   fi
 }
 
-# Build and tag Docker image
-image_builder() {
+# Pull and retag Docker image
+image_tagger() {
   local aws_region="$1"
   local aws_account_id="$2"
   local image_name="$3"
   local image_tag="$4"
 
-  docker build -t ${image_name}:${image_tag} ./scraper
+  docker pull ${DOCKERHUB_USERNAME}/${image_name}:${image_tag}
 
   if [ $? -ne 0 ]; then
-    echo "Docker build failed. Exiting."
+    echo "Docker pull failed. Exiting."
     exit 1
   fi
 
@@ -85,12 +85,12 @@ deploy() {
   aws_account_id="$2"
   aws_bucket_name="car-scraper-bucket"
 
-  image_name=car_scraper_lambda
+  image_name=car_scraper
   image_tag=latest
 
   create_s3_bucket "$aws_region" "$aws_bucket_name"
   create_repo_infrastructure "$aws_region" "$aws_bucket_name"
-  image_builder "$aws_region" "$aws_account_id" "$image_name" "$image_tag"
+  image_tagger "$aws_region" "$aws_account_id" "$image_name" "$image_tag"
   image_uploader "$aws_region" "$aws_account_id" "$image_name" "$image_tag"
   create_lambda_infrastructure "$aws_region" "$aws_bucket_name"
 }
