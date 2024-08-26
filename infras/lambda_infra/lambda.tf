@@ -8,12 +8,24 @@ terraform {
   backend "s3" {
     bucket = "car-scraper-bucket"
     key    = "lambda_infra/terraform.tfstate"
-    region = "eu-north-1"
+    region = var.aws_region
   }
 }
 
 provider "aws" {
-  region = "eu-north-1"
+  region = var.aws_region
+}
+
+variable "aws_region" {
+  description = "Value of the aws region"
+  type        = string
+  sensitive = false
+}
+
+variable "scrape_url" {
+  description = "Value of the url to scrape"
+  type        = string
+  sensitive = false
 }
 
 resource "aws_iam_policy" "dynamodb_lambda_policy" {
@@ -64,14 +76,8 @@ data "terraform_remote_state" "repo_infra" {
   config = {
     bucket = "car-scraper-bucket"
     key    = "repo_infra/terraform.tfstate"
-    region = "eu-north-1"
+    region = var.aws_region
   }
-}
-
-variable "scrape_url" {
-  description = "Value of the url to scrape"
-  type        = string
-  sensitive = false
 }
 
 resource "aws_lambda_function" "car_scraper_lambda" {
