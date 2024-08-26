@@ -100,7 +100,7 @@ cleanup() {
       exit 0
     fi
 
-  ( cd ./infras/lambda_infra && terraform init -reconfigure && terraform destroy -auto-approve )
+  ( cd ./infras/lambda_infra && terraform init -reconfigure && terraform destroy -auto-approve -var "aws_region=$aws_region" )
   ( cd ./infras/repo_infra && terraform init -reconfigure && terraform destroy -auto-approve )
 
   delete_s3_bucket "$aws_region"
