@@ -14,7 +14,7 @@ check_aws_resources() {
   fi
 
   # Check if the ECR repository exists
-  aws ecr describe-repositories --repository-names car_scraper_lambda 2>/dev/null
+  aws ecr describe-repositories --repository-names car_scraper 2>/dev/null
   if [ $? -ne 0 ]; then
     echo "ECR repository not found. Continuing..."
   else
