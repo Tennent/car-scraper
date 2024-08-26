@@ -8,7 +8,6 @@ terraform {
   backend "s3" {
     bucket = "car-scraper-bucket"
     key    = "lambda_infra/terraform.tfstate"
-    region = var.aws_region
   }
 }
 
