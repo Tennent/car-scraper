@@ -35,6 +35,7 @@ image_tagger() {
   local image_name="$3"
   local image_tag="$4"
 
+  echo "docker pull ${dockerhub_username}/${image_name}:${image_tag}"
   docker pull ${DOCKERHUB_USERNAME}/${image_name}:${image_tag}
 
   if [ $? -ne 0 ]; then
