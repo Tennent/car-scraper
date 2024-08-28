@@ -8,12 +8,17 @@ terraform {
   backend "s3" {
     bucket = "car-scraper-bucket"
     key    = "repo_infra/terraform.tfstate"
-    region = "eu-north-1"
   }
 }
 
 provider "aws" {
-  region = "eu-north-1"
+  region = var.aws_region
+}
+
+variable "aws_region" {
+  description = "Value of the aws region"
+  type        = string
+  sensitive = false
 }
 
 resource "aws_ecr_repository" "car-scraper" {
