@@ -89,6 +89,12 @@ jobs:
           local-image: ${{ secrets.DOCKERHUB_USERNAME }}/car-scraper:latest
           image: car-scraper
 
+      - name: Deploy AWS Lambda
+        env:
+          SCRAPE_URL: ${{ secrets.SCRAPE_URL }}
+        run: |
+          ./deploy_lambda.sh ${{ secrets.AWS_REGION }}
+
       - name: Run Lambda function
         run: |
           ./run.sh
