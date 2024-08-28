@@ -38,13 +38,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          if [[ -n ${{ steps.cache-pip.outputs.cache-hit }} ]]; then
-            pip install --upgrade pip
-            pip install -r ./scraper/requirements.txt --no-dep
-          else
-            pip install --upgrade pip
-            pip install -r ./scraper/requirements.txt
-          fi
+          python -m pip install --upgrade pip
+          pip install -r ./scraper/requirements.txt
 
       - name: Lint with flake8
         run: |
