@@ -16,8 +16,8 @@ provider "aws" {
   region = "eu-north-1"
 }
 
-resource "aws_ecr_repository" "car_scraper" {
-  name                 = "car_scraper"
+resource "aws_ecr_repository" "car-scraper" {
+  name                 = "car-scraper"
   image_tag_mutability = "MUTABLE"
   force_delete         = true
 
@@ -27,5 +27,5 @@ resource "aws_ecr_repository" "car_scraper" {
 }
 
 output "ecr_repository_url" {
-  value = aws_ecr_repository.car_scraper.repository_url
+  value = aws_ecr_repository.car-scraper.repository_url
 }
