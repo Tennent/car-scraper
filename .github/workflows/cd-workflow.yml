@@ -68,6 +68,10 @@ jobs:
         run: |
           ./deploy_bucket.sh ${{ secrets.AWS_REGION }}
 
+      - name: Deploy Amazon ECR repository
+        run: |
+          ./deploy_repo.sh ${{ secrets.AWS_REGION }}
+
       - name: Run Lambda function
         run: |
           ./run.sh
