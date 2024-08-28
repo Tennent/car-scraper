@@ -59,7 +59,9 @@ jobs:
 
       - name: Make scripts executable
         run: |
-          chmod +x ./deploy.sh
+          chmod +x ./deploy_bucket.sh
+          chmod +x ./deploy_repo.sh
+          chmod +x ./deploy_lambda.sh
           chmod +x ./run.sh
 
       - name: Deploy to AWS
