@@ -78,7 +78,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
+        
       - name: Pull changes
         run: git pull --no-rebase --no-tags
 
@@ -104,13 +104,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          if [[ -n ${{ steps.cache-pip.outputs.cache-hit }} ]]; then
-            pip install --upgrade pip
-            pip install -r ./scraper/requirements.txt --no-dep
-          else
-            pip install --upgrade pip
-            pip install -r ./scraper/requirements.txt
-          fi
+          python -m pip install --upgrade pip
+          pip install -r ./scraper/requirements.txt
 
       - name: Test with pytest
         run: |
