@@ -64,6 +64,10 @@ jobs:
           chmod +x ./deploy_lambda.sh
           chmod +x ./run.sh
 
+      - name: Deploy Amazon S3 bucket
+        run: |
+          ./deploy_bucket.sh ${{ secrets.AWS_REGION }}
+
       - name: Run Lambda function
         run: |
           ./run.sh
