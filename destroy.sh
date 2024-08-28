@@ -14,7 +14,7 @@ check_aws_resources() {
   fi
 
   # Check if the ECR repository exists
-  aws ecr describe-repositories --repository-names car_scraper 2>/dev/null
+  aws ecr describe-repositories --repository-names car-scraper 2>/dev/null
   if [ $? -ne 0 ]; then
     echo "ECR repository not found. Continuing..."
   else
@@ -23,7 +23,7 @@ check_aws_resources() {
   fi
 
   # Check if the Lambda function exists
-  aws lambda get-function --function-name car_scraper 2>/dev/null
+  aws lambda get-function --function-name car_scraper_lambda 2>/dev/null
   if [ $? -ne 0 ]; then
     echo "Lambda function not found. Continuing..."
   else
@@ -100,8 +100,8 @@ cleanup() {
       exit 0
     fi
 
-  ( cd ./infras/lambda_infra && terraform init -reconfigure && terraform destroy -auto-approve -var "aws_region=$aws_region" )
-  ( cd ./infras/repo_infra && terraform init -reconfigure && terraform destroy -auto-approve )
+  ( cd ./infras/lambda_infra && terraform init -reconfigure && terraform destroy -auto-approve -var "scrape_url=$SCRAPE_URL" -var "aws_region=$aws_region" )
+  ( cd ./infras/repo_infra && terraform init -reconfigure && terraform destroy -auto-approve -var "aws_region=$aws_region" )
 
   delete_s3_bucket "$aws_region"
 }
