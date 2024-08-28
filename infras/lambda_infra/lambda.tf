@@ -80,7 +80,7 @@ data "terraform_remote_state" "repo_infra" {
 }
 
 resource "aws_lambda_function" "car_scraper_lambda" {
-  function_name = "car_scraper"
+  function_name = "car_scraper_lambda"
   image_uri     = "${data.terraform_remote_state.repo_infra.outputs.ecr_repository_url}:latest"
   role          = aws_iam_role.lambda_role.arn
   package_type  = "Image"
