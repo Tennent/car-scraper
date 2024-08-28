@@ -8,16 +8,21 @@ terraform {
   backend "s3" {
     bucket = "car-scraper-bucket"
     key    = "repo_infra/terraform.tfstate"
-    region = "eu-north-1"
   }
 }
 
 provider "aws" {
-  region = "eu-north-1"
+  region = var.aws_region
 }
 
-resource "aws_ecr_repository" "car_scraper" {
-  name                 = "car_scraper"
+variable "aws_region" {
+  description = "Value of the aws region"
+  type        = string
+  sensitive = false
+}
+
+resource "aws_ecr_repository" "car-scraper" {
+  name                 = "car-scraper"
   image_tag_mutability = "MUTABLE"
   force_delete         = true
 
@@ -27,5 +32,5 @@ resource "aws_ecr_repository" "car_scraper" {
 }
 
 output "ecr_repository_url" {
-  value = aws_ecr_repository.car_scraper.repository_url
+  value = aws_ecr_repository.car-scraper.repository_url
 }
