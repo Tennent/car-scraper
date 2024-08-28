@@ -79,6 +79,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Pull changes
+        run: git pull --no-rebase --no-tags
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
