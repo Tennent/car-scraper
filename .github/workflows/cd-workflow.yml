@@ -14,6 +14,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Pull changes
+        run: git pull --no-rebase --no-tags
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
