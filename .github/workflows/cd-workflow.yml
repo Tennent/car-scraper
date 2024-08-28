@@ -40,11 +40,15 @@ jobs:
   deploy:
     needs: cleanup
     runs-on: ubuntu-latest
-    container: docker.io/tennent/scraper-cicd-container:v1.1.0
-    
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Pull changes
+        run: git pull --no-rebase --no-tags
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
       
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -55,15 +59,42 @@ jobs:
 
       - name: Make scripts executable
         run: |
-          chmod +x ./deploy.sh
+          chmod +x ./deploy_bucket.sh
+          chmod +x ./deploy_repo.sh
+          chmod +x ./deploy_lambda.sh
           chmod +x ./run.sh
 
-      - name: Deploy to AWS
+      - name: Deploy Amazon S3 bucket
+        run: |
+          ./deploy_bucket.sh ${{ secrets.AWS_REGION }}
+
+      - name: Deploy Amazon ECR repository
+        run: |
+          ./deploy_repo.sh ${{ secrets.AWS_REGION }}
+
+      - name: Pull or Build Docker image
+        uses: djbender/docker-buildx-pull-or-build@v0.3
+        with:
+          docker_username: ${{ secrets.DOCKERHUB_USERNAME }}
+          docker_password: ${{ secrets.DOCKERHUB_TOKEN }}
+          image: ${{ secrets.DOCKERHUB_USERNAME }}/car-scraper:latest
+          dockerfile: ./scraper/Dockerfile
+
+      - name: Push to Amazon ECR
+        uses: jwalton/gh-ecr-push@v2
+        with:
+          access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          region: ${{ secrets.AWS_REGION }}
+          local-image: ${{ secrets.DOCKERHUB_USERNAME }}/car-scraper:latest
+          image: car-scraper
+
+      - name: Deploy AWS Lambda
         env:
           SCRAPE_URL: ${{ secrets.SCRAPE_URL }}
         run: |
-          ./deploy.sh ${{ secrets.AWS_REGION }} ${{ secrets.AWS_ACCOUNT_ID }}
-        
+          ./deploy_lambda.sh ${{ secrets.AWS_REGION }}
+
       - name: Run Lambda function
         run: |
           ./run.sh
