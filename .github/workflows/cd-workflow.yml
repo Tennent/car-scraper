@@ -72,6 +72,14 @@ jobs:
         run: |
           ./deploy_repo.sh ${{ secrets.AWS_REGION }}
 
+      - name: Pull or Build Docker image
+        uses: djbender/docker-buildx-pull-or-build@v0.3
+        with:
+          docker_username: ${{ secrets.DOCKERHUB_USERNAME }}
+          docker_password: ${{ secrets.DOCKERHUB_TOKEN }}
+          image: ${{ secrets.DOCKERHUB_USERNAME }}/car-scraper:latest
+          dockerfile: ./scraper/Dockerfile
+
       - name: Run Lambda function
         run: |
           ./run.sh
