@@ -145,7 +145,7 @@ Follow thse steps to run the workflow and view the finsihed output.
 <!-- CONTACT -->
 ## Contact
 
-Zalán Márton - [LinkedIn](https://www.linkedin.com/zalan-marton/) - zalan.marton@gmail.com
+Zalán Márton - [LinkedIn](https://www.linkedin.com/in/zalan-marton/) - zalan.marton@gmail.com
 
 Project Link: [https://github.com/Tennent/car-scraper](https://github.com/Tennent/car-scraper)
 
