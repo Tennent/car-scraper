@@ -6,6 +6,7 @@
   <a href="https://github.com/Tennent/car-scraper">
     <img src="images/logo.png" alt="Logo" width="250" height="250">
   </a>
+</div>
 
 <h3 align="center">Car Scraper Project</h3>
 
