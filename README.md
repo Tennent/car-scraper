@@ -91,19 +91,19 @@ To get your on deployment up and running follow these simple steps.
 
 1. Select the Settings tab in the GitHub repo
 
-   <img src="images/settings-tab.png" alt="settings-tab" width="1100" height="120">
+   <img src="images/settings-tab.png" alt="settings-tab" width="800" height="91">
 
 2. Select Actions within Secrets and variables from the Security section on the left
 
-   <img src="images/action-secrets.png" alt="action-secrets" width="391" height="296">
+   <img src="images/action-secrets.png" alt="action-secrets" width="350" height="265">
 
 3. Click the New repository secret button
 
-   <img src="images/new-secret.png" alt="new-secret" width="850" height="530">
+   <img src="images/new-secret.png" alt="new-secret" width="650" height="390">
 
 4. Fill in the secret name and value, then click Add secret
 
-   <img src="images/secret-value.png" alt="secret-value" width="850" height="470">
+   <img src="images/secret-value.png" alt="secret-value" width="650" height="340">
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -117,27 +117,27 @@ Follow thse steps to run the workflow and view the finsihed output.
 
 1. Select the Actions tab in the GitHub repo
 
-   <img src="images/actions-tab.png" alt="actions-tab" width="1100" height="120">
+   <img src="images/actions-tab.png" alt="actions-tab" width="800" height="91">
 
 2. Select the CI workflow from the lost on the left
 
-   <img src="images/ci-workflow.png" alt="ci-workflow" width="420" height="550">
+   <img src="images/ci-workflow.png" alt="ci-workflow" width="350" height="458">
 
 3. Click the dropdown menu for Run workflow and select the branch to run the workflow on (it should always be main)
 
-   <img src="images/run-workflow.png" alt="run-workflow" width="412" height="250">
+   <img src="images/run-workflow.png" alt="run-workflow" width="350" height="212">
 
 4. Wait for the CI and CD workflows to finish
 
-   <img src="images/finished-workflow-runs.png" alt="finished-workflow-runs" width="1100" height="145">
+   <img src="images/finished-workflow-runs.png" alt="finished-workflow-runs" width="850" height="113">
 
 5. Search for DynamoDB in the AWS Management Console
 
-   <img src="images/aws-console-search.png" alt="aws-console-search" width="900" height="500">
+   <img src="images/aws-console-search.png" alt="aws-console-search" width="650" height="350">
 
 6. View the database content
 
-   <img src="images/dynamodb-content.png" alt="dynamodb-content" width="1200" height="540">
+   <img src="images/dynamodb-content.png" alt="dynamodb-content" width="850" height="362">
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
